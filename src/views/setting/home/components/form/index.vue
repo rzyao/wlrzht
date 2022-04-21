@@ -13,7 +13,6 @@
           list-type="picture"
           :auto-upload="false"
           :on-change="imgChange"
-          :http-request="uploadHttpRequest"
           :limit="1"
         >
           <el-button size="small" type="primary">点击上传</el-button>
@@ -36,7 +35,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即添加</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="resetMask">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -49,7 +48,7 @@ export default {
       msg: '',
       form: {
         name: '',
-        img64: '',
+        img: '',
         link: '',
         number: '',
         state: ''
@@ -61,10 +60,12 @@ export default {
 
   },
   methods: {
+    resetMask() {
+      console.log('resetMask')
+      this.$emit('resetMask')
+    },
     onSubmit() {
-      this.uploadHttpRequest()
       this.$emit('sonform', this.form)
-      return (this.form)
     },
     imgChange(file, fileList) {
       const isJPG = file.raw.type === 'image/jpeg'
@@ -78,21 +79,11 @@ export default {
         this.$message.error('上传图片大小不能超过 200kb!')
         return false
       } else if (isLt2M && (isPNG || isJPG)) {
-        this.iconformData.img = file.raw// 图片的url
-        this.iconformData.name = file.name// 图片的名字
-      }
-    },
-    uploadHttpRequest(data) {
-      console.log(data)
-      const reader = new FileReader()
-      const that = this
-      reader.readAsText(data.file)
-      reader.onload = function() {
-        that.form.img64 = this.result
+        this.form.img = file// 图片
       }
     },
     removeImg() {
-      this.form.img64 = ''
+      this.form.img = ''
     }
   }
 }

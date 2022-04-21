@@ -13,7 +13,7 @@
           <div v-if="mask == true" class="formbox" @click="ResetMask">
             <div class="form" @click="StopResetMask">
               <!-- 二次封装组件 -->
-              <banner-form @sonform="getForm">表单组件</banner-form>
+              <banner-form @sonform="getAndUploadForm" @resetMask="ResetMask">表单组件</banner-form>
               <!-- <el-form ref="form" :model="form" label-width="80px" label-position="left">
                 <el-form-item label="名称">
                   <el-input v-model="form.name" style="width:200px" />
@@ -127,12 +127,13 @@ export default {
       console.log(this.mask)
     },
     ResetMask() {
+      console.log('ResetMask')
       this.mask = false
     },
     StopResetMask(e) {
       e.stopPropagation()
     },
-    getForm(data) {
+    getAndUploadForm(data) {
       this.msg = data
       console.log(this.msg)
     }
@@ -179,5 +180,11 @@ export default {
   padding-right: 40px;
   border: 1px solid rgb(161, 161, 161);
 }
-
+.app-container{
+height: 100%;
+}
+.el-tabs__content{
+  height: calc(100vh - 110px);
+  overflow-y: auto;
+}
 </style>
