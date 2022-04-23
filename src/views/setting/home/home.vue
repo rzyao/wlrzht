@@ -44,15 +44,16 @@
 
         <!-- 中部显示轮播图信息 -->
         <el-table
+          class="el-table"
           :data="tableData"
-          height="250"
+          height="el-table"
           border
-          style="width: 100%"
+          style="width: 100%;height: calc(100vh - 184px);"
         >
           <el-table-column
             prop="number"
             label="排序"
-            width="100"
+            width="80"
           />
           <el-table-column
             prop="name"
@@ -94,54 +95,54 @@
 <script>
 
 export default {
-  name: '',
-  data() {
-    return {
-      activeName: 'first',
-      msg: '',
-      mask: false, // 遮罩层
-      // form表单数据
-      form: {
-        name: '',
-        img64: '',
-        link: '',
-        number: '',
-        state: ''
-      }
-    }
-  },
-  created() {
+    name: '',
+    data() {
+        return {
+            activeName: 'first',
+            msg: '',
+            mask: false, // 遮罩层
+            // form表单数据
+            form: {
+                name: '',
+                img64: '',
+                link: '',
+                number: '',
+                state: ''
+            }
+        }
+    },
+    created() {
 
-  },
-  mounted() {
+    },
+    mounted() {
 
-  },
-  methods: {
-    handleClick(tab, event) {
-      console.log(tab, event)
-      console.log(process.env.VUE_APP_BASE_API)
     },
-    changemask() {
-      console.log(this)
-      this.mask = true
-      console.log(this.mask)
-    },
-    ResetMask() {
-      console.log('ResetMask')
-      this.mask = false
-    },
-    StopResetMask(e) {
-      e.stopPropagation()
-    },
-    getAndUploadForm(data) {
-      this.msg = data
-      console.log(this.msg)
+    methods: {
+        handleClick(tab, event) {
+            console.log(tab, event)
+            console.log(process.env.VUE_APP_BASE_API)
+        },
+        changemask() {
+            console.log(this)
+            this.mask = true
+            console.log(this.mask)
+        },
+        ResetMask() {
+            console.log('ResetMask')
+            this.mask = false
+        },
+        StopResetMask(e) {
+            e.stopPropagation()
+        },
+        getAndUploadForm(data) {
+            this.msg = data
+            console.log(this.msg)
+        }
     }
-  }
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 /* 缩放动画 */
 .transition-enter, .transition-leave-to {
   transform: scale(0)
@@ -180,11 +181,8 @@ export default {
   padding-right: 40px;
   border: 1px solid rgb(161, 161, 161);
 }
-.app-container{
-height: 100%;
+.el-table{
+  height: calc(100vh - 184px);
 }
-.el-tabs__content{
-  height: calc(100vh - 110px);
-  overflow-y: auto;
-}
+
 </style>
