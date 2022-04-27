@@ -1,5 +1,6 @@
 <template>
   <div class="BannerForm">
+    <my-alert :text="11111111111111111111" />
     <el-form ref="form" :model="form" label-width="80px" label-position="left">
       <el-form-item
         label="名称"
@@ -14,12 +15,14 @@
       <el-form-item label="选择图片">
         <el-upload
           class="upload"
-          action="#"
+          action="https://www.htqq.sale/wlrz/temporary/imgstore.php"
           :on-remove="removeImg"
           list-type="picture"
-          :auto-upload="false"
+          :auto-upload="true"
           :on-change="imgChange"
           :limit="1"
+          :on-success="ShowRes"
+          :on-error="Alert"
         >
           <el-button size="small" type="primary">点击上传</el-button>
 
@@ -28,6 +31,13 @@
         <!-- <el-button>选择图片</el-button>
         <el-input v-model="form.img64" style="width:200px" />
          -->
+        <el-alert
+          v-show="isAlert"
+          title="系统错误！"
+          type="error"
+          description="发生未知错误，请联系管理员处理。"
+          show-icon
+        />
       </el-form-item>
       <el-form-item label="跳转链接">
         <el-input v-model="form.link" style="width:250px" />
@@ -55,58 +65,69 @@
 </template>
 <script>
 export default {
-  name: 'BannerForm',
-  data() {
-    return {
-      msg: '',
-      form: {
-        name: '',
-        img: '',
-        link: '',
-        number: 0,
-        state: ''
-      },
-      fileList: []
-    }
-  },
-  mounted() {
-
-  },
-  methods: {
-    resetMask() {
-      console.log('resetMask')
-      this.$emit('resetMask')
-    },
-    onSubmit(form) {
-      this.$refs[form].validate((valid) => {
-        if (valid) {
-          alert('submit!')
-        } else {
-          console.log('error submit!!')
-          return false
+    name: 'BannerForm',
+    data() {
+        return {
+            msg: '',
+            form: {
+                name: '',
+                img: '',
+                link: '',
+                number: 0,
+                state: ''
+            },
+            fileList: [],
+            isAlert: false
         }
-      })
-      this.$emit('sonform', this.form)
     },
-    imgChange(file, fileList) {
-      const isJPG = file.raw.type === 'image/jpeg'
-      const isPNG = file.raw.type === 'image/png'
-      const isLt2M = file.raw.size / 1024 / 1024 < 0.5
-      this.hideUploadIcon = fileList.length >= 1
-      if (!isPNG && !isJPG) {
-        this.$message.error('上传图片只能是 JPG/PNG 格式!')
-        return false
-      } else if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 200kb!')
-        return false
-      } else if (isLt2M && (isPNG || isJPG)) {
-        this.form.img = file// 图片
-      }
+    mounted() {
+
     },
-    removeImg() {
-      this.form.img = ''
+    methods: {
+        resetMask() {
+            console.log('resetMask')
+            this.$emit('resetMask')
+        },
+        onSubmit(form) {
+            this.$refs[form].validate((valid) => {
+                if (valid) {
+                    alert('submit!')
+                } else {
+                    console.log('error submit!!')
+                    return false
+                }
+            })
+            this.$emit('sonform', this.form)
+        },
+        imgChange(file, fileList) {
+            const isJPG = file.raw.type === 'image/jpeg'
+            const isPNG = file.raw.type === 'image/png'
+            const isLt2M = file.raw.size / 1024 / 1024 < 0.5
+            this.hideUploadIcon = fileList.length >= 1
+            if (!isPNG && !isJPG) {
+                this.$message.error('上传图片只能是 JPG/PNG 格式!')
+                return false
+            } else if (!isLt2M) {
+                this.$message.error('上传图片大小不能超过 200kb!')
+                return false
+            } else if (isLt2M && (isPNG || isJPG)) {
+                this.form.img = file// 图片
+            }
+        },
+        removeImg() {
+            this.form.img = ''
+        },
+        ShowRes(response, file, fileList) {
+            console.log('图片上传结果:' + response)
+            this.AddImgUrlToForm(response)
+        },
+        AddImgUrlToForm(response) {
+            this.form.img = response
+        },
+        Alert() {
+            this.isAlert = true
+        }
     }
-  }
 }
 </script>
 
