@@ -1,6 +1,5 @@
 <template>
   <div class="BannerForm">
-    <my-alert :text="11111111111111111111" />
     <el-form ref="form" :model="form" label-width="80px" label-position="left">
       <el-form-item
         label="名称"
@@ -21,23 +20,13 @@
           :auto-upload="true"
           :on-change="imgChange"
           :limit="1"
-          :on-success="ShowRes"
-          :on-error="Alert"
+          :on-success="imgUploadSuccess"
+          :on-error="imgUploadError"
         >
           <el-button size="small" type="primary">点击上传</el-button>
 
           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
         </el-upload>
-        <!-- <el-button>选择图片</el-button>
-        <el-input v-model="form.img64" style="width:200px" />
-         -->
-        <el-alert
-          v-show="isAlert"
-          title="系统错误！"
-          type="error"
-          description="发生未知错误，请联系管理员处理。"
-          show-icon
-        />
       </el-form-item>
       <el-form-item label="跳转链接">
         <el-input v-model="form.link" style="width:250px" />
@@ -56,10 +45,10 @@
       <el-form-item label="是否显示">
         <el-switch v-model="form.state" />
       </el-form-item>
-      <el-form-item>
+      <div class="button">
         <el-button type="primary" @click="onSubmit('form')">立即添加</el-button>
         <el-button @click="resetMask">取消</el-button>
-      </el-form-item>
+      </div>
     </el-form>
   </div>
 </template>
@@ -71,13 +60,13 @@ export default {
             msg: '',
             form: {
                 name: '',
-                img: '',
+                src: '',
                 link: '',
                 number: 0,
-                state: ''
+                state: true
             },
             fileList: [],
-            isAlert: false
+            alertShow: false
         }
     },
     mounted() {
@@ -91,13 +80,26 @@ export default {
         onSubmit(form) {
             this.$refs[form].validate((valid) => {
                 if (valid) {
-                    alert('submit!')
+                    console.log(valid)
+                    console.log(this.form)
+                    console.log(typeof this.form.src)
+                    if (typeof this.form.src === 'string' && this.form.src.length !== 0) {
+                        // 触发父组件的getAndUploadForm提交表单事件
+                        this.$emit('sonform', this.form)
+                    } else {
+                        this.$myalert({ msg: '请上传图片' })
+                        return false
+                    }
                 } else {
-                    console.log('error submit!!')
+                    // console.log(this.$refs[form])
+                    // this.$myalert({ msg: '请填写完整表单' }).then(() => {
+                    //     console.log('确定关闭')
+                    // }).catch(() => {
+                    //     console.log('alert出错')
+                    // })
                     return false
                 }
             })
-            this.$emit('sonform', this.form)
         },
         imgChange(file, fileList) {
             const isJPG = file.raw.type === 'image/jpeg'
@@ -117,15 +119,12 @@ export default {
         removeImg() {
             this.form.img = ''
         },
-        ShowRes(response, file, fileList) {
+        imgUploadSuccess(response, file, fileList) {
             console.log('图片上传结果:' + response)
-            this.AddImgUrlToForm(response)
+            this.form.src = response
         },
-        AddImgUrlToForm(response) {
-            this.form.img = response
-        },
-        Alert() {
-            this.isAlert = true
+        imgUploadError(error) {
+            console.log(error)
         }
     }
 }
@@ -135,5 +134,9 @@ export default {
 .bitian{
   color: red;
   display: inline-block;
+}
+.button{
+  display: flex;
+  justify-content: space-evenly;
 }
 </style>

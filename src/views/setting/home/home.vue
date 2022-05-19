@@ -10,35 +10,10 @@
         <el-button type="primary" @click="changemask">添加轮播图</el-button>
         <transition name="transition">
           <!-- 轮播图添加表单 -->
-          <div v-if="mask == true" class="formbox" @click="ResetMask">
+          <div v-if="mask == true" class="formbox" :style="{height:appHeight ,width:appWidth}" @click="ResetMask">
             <div class="form" @click="StopResetMask">
-              <!-- 二次封装组件 -->
+              <!-- 二次封装表单组件 -->
               <banner-form @sonform="getAndUploadForm" @resetMask="ResetMask">表单组件</banner-form>
-              <!-- <el-form ref="form" :model="form" label-width="80px" label-position="left">
-                <el-form-item label="名称">
-                  <el-input v-model="form.name" style="width:200px" />
-                  <div class="bitian">*必填</div>
-                </el-form-item>
-                <el-form-item label="选择图片">
-                  <el-button>选择图片</el-button>
-                  <el-input v-model="form.img64" style="width:100px" />
-                  <div class="bitian">*必填</div>
-                </el-form-item>
-                <el-form-item label="跳转链接">
-                  <el-input v-model="form.link" style="width:200px" />
-                </el-form-item>
-                <el-form-item label="排序">
-                  <el-input v-model="form.number" style="width:200px" />
-                  <div class="bitian">*必填</div>
-                </el-form-item>
-                <el-form-item label="是否显示">
-                  <el-switch v-model="form.state" />
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" @click="onSubmit">立即添加</el-button>
-                  <el-button @click="ResetMask">取消</el-button>
-                </el-form-item>
-              </el-form> -->
             </div>
           </div></transition>
 
@@ -104,18 +79,30 @@ export default {
             // form表单数据
             form: {
                 name: '',
-                img64: '',
+                src: '',
                 link: '',
                 number: '',
                 state: ''
-            }
+            },
+            tableData: [],
+            AppMainWidth: '',
+            AppMainHeight: ''
         }
     },
-    created() {
+    computed: {
+        appHeight: function() {
+            return this.AppMainHeight + 'px'
+        },
+        appWidth: function() {
+            return this.AppMainWidth + 'px'
+        }
+    },
+    created: {
 
     },
     mounted() {
-
+        this.AppMainWidth = document.getElementById('AppMain').offsetWidth
+        this.AppMainHeight = document.getElementById('AppMain').offsetHeight
     },
     methods: {
         handleClick(tab, event) {
@@ -135,8 +122,8 @@ export default {
             e.stopPropagation()
         },
         getAndUploadForm(data) {
-            this.msg = data
-            console.log(this.msg)
+            this.form = data
+            console.log(this.form)
         }
     }
 }
@@ -151,7 +138,7 @@ export default {
   transform: scale(1)
 }
 .transition-enter-active, .transition-leave-active {
-  transition: all 0.2s
+  transition: all 0.3s
 }
 .mask{
   position: fixed;
@@ -164,21 +151,17 @@ export default {
 }
 .formbox{
   position: fixed;
-  left: 0;
   right: 0;
-  top: 0;
   bottom: 0;
   z-index: 1000;
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 .form{
-  width: 600px;
+  margin-top: 100px;
+  height: 500px;
   background-color: #fff;
-  padding-top: 20px;
-  padding-left: 100px;
-  padding-right: 40px;
+  padding: 50px;
   border: 1px solid rgb(161, 161, 161);
 }
 .el-table{

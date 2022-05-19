@@ -44,36 +44,37 @@
 </template>
 
 <script>
-  import { getList } from '@/api/table'
+import { getList } from '@/api/userlist'
 
-  export default {
+export default {
+    name: 'Userlist',
     filters: {
-      statusFilter(status) {
-        const statusMap = {
-          published: 'success',
-          draft: 'gray',
-          deleted: 'danger'
+        statusFilter(status) {
+            const statusMap = {
+                published: 'success',
+                draft: 'gray',
+                deleted: 'danger'
+            }
+            return statusMap[status]
         }
-        return statusMap[status]
-      }
     },
     data() {
-      return {
-        list: null,
-        listLoading: true
-      }
+        return {
+            list: null,
+            listLoading: true
+        }
     },
     created() {
-      this.fetchData()
+        this.fetchData()
     },
     methods: {
-      fetchData() {
-        this.listLoading = true
-        getList().then(response => {
-          this.list = response.data.items
-          this.listLoading = false
-        })
-      }
+        fetchData() {
+            this.listLoading = true
+            getList().then(response => {
+                this.list = response.data.items
+                this.listLoading = false
+            })
+        }
     }
-  }
+}
 </script>

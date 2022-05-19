@@ -8,17 +8,17 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'Dashboard',
-  data() {
-    return {
-      name: '仪表台'
+    name: 'Dashboard',
+    data() {
+        return {
+            name: '仪表台'
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'Dashboard'
+        ])
     }
-  },
-  computed: {
-    ...mapGetters([
-      'Dashboard'
-    ])
-  }
 }
 </script>
 
