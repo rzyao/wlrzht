@@ -119,10 +119,12 @@ export default {
         removeImg() {
             this.form.img = ''
         },
+        // 图片上传成功回调函数
         imgUploadSuccess(response, file, fileList) {
             console.log('图片上传结果:' + response)
             this.form.src = response
         },
+        // 图片上传失败回调函数
         imgUploadError(error) {
             console.log(error)
         }

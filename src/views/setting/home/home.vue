@@ -4,8 +4,8 @@
     <transition name="transition">
       <div v-if="mask == true" class="mask" />
     </transition>
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="顶部轮播图" name="first">
+    <el-tabs v-model="activeName" style="width: 100%;" type="border-card" :stretch="true" @tab-click="handleClick">
+      <el-tab-pane label="顶部轮播图" name="first" class="el-tab-pane">
         <!-- 轮播图添加按钮，点击弹出表单 -->
         <el-button type="primary" @click="changemask">添加轮播图</el-button>
         <transition name="transition">
@@ -23,7 +23,7 @@
           :data="tableData"
           height="el-table"
           border
-          style="width: 100%;height: calc(100vh - 184px);"
+          style="width: auto;"
         >
           <el-table-column
             prop="number"
@@ -36,18 +36,17 @@
             width="180"
           />
           <el-table-column
-            prop="address"
+            prop="link_src"
             label="链接地址"
             width="180"
           />
           <el-table-column
-            prop="image"
+            prop="url"
             label="图片"
-            width="400"
           />
           <el-table-column
-            prop="lasttime"
-            label="最后操作时间"
+            prop="creat_time"
+            label="添加时间"
             width="180"
           />
           <el-table-column
@@ -56,10 +55,22 @@
             width="180"
           />
           <el-table-column
-            prop="edit"
             label="操作"
             width="180"
-          />
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-button
+                size="small "
+                @click="handleEdit(scope.$index, scope.row)"
+              >编辑</el-button>
+              <el-button
+                size="small "
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
+              >删除</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="底部导航" name="second">底部导航</el-tab-pane>
@@ -68,7 +79,8 @@
 </template>
 
 <script>
-
+import { UploadBanner, getBannerList } from '@/api/setting/home'
+import { Loading } from 'element-ui'
 export default {
     name: '',
     data() {
@@ -97,14 +109,27 @@ export default {
             return this.AppMainWidth + 'px'
         }
     },
-    created: {
-
+    created() {
+        this.fetchData()
     },
     mounted() {
         this.AppMainWidth = document.getElementById('AppMain').offsetWidth
         this.AppMainHeight = document.getElementById('AppMain').offsetHeight
     },
     methods: {
+        handleEdit(index, row) {
+            console.log(row)
+        },
+        fetchData() {
+            const loading = Loading.service({ })
+            console.log('this.loading')
+            getBannerList().then(response => {
+                console.log(response.data)
+                console.log('response.data')
+                this.tableData = response.data
+                loading.close()
+            })
+        },
         handleClick(tab, event) {
             console.log(tab, event)
             console.log(process.env.VUE_APP_BASE_API)
@@ -124,6 +149,17 @@ export default {
         getAndUploadForm(data) {
             this.form = data
             console.log(this.form)
+            const loading = Loading.service({ })
+            UploadBanner(this.form).then(Response => {
+                const message = Response.message
+                this.$message({
+                    message: message,
+                    type: 'success'
+                })
+                setTimeout(() => {
+                    this.fetchData()
+                }, 500)
+            })
         }
     }
 }
@@ -140,6 +176,14 @@ export default {
 .transition-enter-active, .transition-leave-active {
   transition: all 0.3s
 }
+.app-container{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
 .mask{
   position: fixed;
   left: 0;
@@ -158,14 +202,19 @@ export default {
   justify-content: center;
 }
 .form{
+  align-self:flex-start;
   margin-top: 100px;
-  height: 500px;
   background-color: #fff;
   padding: 50px;
   border: 1px solid rgb(161, 161, 161);
 }
+.el-tab-pane{
+  width: 100%;
+}
 .el-table{
-  height: calc(100vh - 184px);
+    width: 100%;
+    height: calc(100vh - 184px);;
+    margin: 20px;
 }
 
 </style>

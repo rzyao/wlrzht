@@ -9,12 +9,12 @@
     <admin-form :mask="mask" @sonform="getAndUploadForm" @resetMask="ResetMask" />
     <show-form :mask="visible" :propsform="toChildForm" @updateform="updateForm" @resetMask="closeShowForm" />
     <el-table
+      class="el-table"
       :data="tableData"
       height="string"
       border
       stripe
       style="width: auto;"
-      class="el-table"
     >
       <el-table-column
         label="账号"
