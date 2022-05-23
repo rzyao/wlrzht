@@ -4,7 +4,7 @@
     <transition name="transition">
       <div v-if="mask == true" class="mask" />
     </transition>
-    <el-tabs v-model="activeName" style="width: 100%;" type="border-card" :stretch="true" @tab-click="handleClick">
+    <el-tabs v-model="activeName" style="width: 100%;" type="border-card" @tab-click="handleClick">
       <el-tab-pane label="顶部轮播图" name="first" class="el-tab-pane">
         <!-- 轮播图添加按钮，点击弹出表单 -->
         <el-button type="primary" @click="changemask">添加轮播图</el-button>
@@ -13,9 +13,10 @@
           <div v-if="mask == true" class="formbox" :style="{height:appHeight ,width:appWidth}" @click="ResetMask">
             <div class="form" @click="StopResetMask">
               <!-- 二次封装表单组件 -->
-              <banner-form @sonform="getAndUploadForm" @resetMask="ResetMask">表单组件</banner-form>
+              <banner-form v-if="mask == true" :form-data="formData" @sonform="getAndUploadForm" @resetMask="ResetMask">表单组件</banner-form>
             </div>
-          </div></transition>
+          </div>
+        </transition>
 
         <!-- 中部显示轮播图信息 -->
         <el-table
@@ -29,6 +30,7 @@
             prop="number"
             label="排序"
             width="80"
+            align="center"
           />
           <el-table-column
             prop="name"
@@ -38,12 +40,15 @@
           <el-table-column
             prop="link_src"
             label="链接地址"
-            width="180"
           />
           <el-table-column
-            prop="url"
             label="图片"
-          />
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-image :src="scope.row.url" style="width: 100px;height:50px ;" />
+            </template>
+          </el-table-column>
           <el-table-column
             prop="creat_time"
             label="添加时间"
@@ -79,6 +84,7 @@
 </template>
 
 <script>
+import { deleteBanner } from '@/api/setting/home'
 import { UploadBanner, getBannerList } from '@/api/setting/home'
 import { Loading } from 'element-ui'
 export default {
@@ -98,7 +104,9 @@ export default {
             },
             tableData: [],
             AppMainWidth: '',
-            AppMainHeight: ''
+            AppMainHeight: '',
+            // 编辑表单传值
+            formData: {}
         }
     },
     computed: {
@@ -117,8 +125,16 @@ export default {
         this.AppMainHeight = document.getElementById('AppMain').offsetHeight
     },
     methods: {
+        handleDelete(index, row) {
+            this.$myalert({ msg: '确定删除这个轮播图吗' }).then(() => {
+                console.log('then')
+            })
+        },
         handleEdit(index, row) {
             console.log(row)
+            this.formData = row
+            this.mask = true
+            console.log(this.formData)
         },
         fetchData() {
             const loading = Loading.service({ })
@@ -140,6 +156,7 @@ export default {
             console.log(this.mask)
         },
         ResetMask() {
+            this.formData = {}
             console.log('ResetMask')
             this.mask = false
         },
@@ -156,6 +173,7 @@ export default {
                     message: message,
                     type: 'success'
                 })
+                this.ResetMask()
                 setTimeout(() => {
                     this.fetchData()
                 }, 500)
@@ -213,7 +231,7 @@ export default {
 }
 .el-table{
     width: 100%;
-    height: calc(100vh - 184px);;
+    height: calc(100vh - 235px);;
     margin: 20px;
 }
 

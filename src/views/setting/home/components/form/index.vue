@@ -11,10 +11,10 @@
         <el-input v-model="form.name" type="name" style="width:200px" />
 
       </el-form-item>
-      <el-form-item label="选择图片">
+      <el-form-item v-if="Upload" :label="label">
         <el-upload
           class="upload"
-          action="https://www.htqq.sale/wlrz/temporary/imgstore.php"
+          action="http://150.158.48.102/wlrz/temporary/imgstore.php"
           :on-remove="removeImg"
           list-type="picture"
           :auto-upload="true"
@@ -28,6 +28,11 @@
           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
         </el-upload>
       </el-form-item>
+      <el-form-item v-if="Image" :label="label">
+
+        <el-image :src="form.src" style="width:200px;height: 100px;" />
+
+      </el-form-item>
       <el-form-item label="跳转链接">
         <el-input v-model="form.link" style="width:250px" />
       </el-form-item>
@@ -39,14 +44,15 @@
           { type: 'number', min: 0,max: 99,message: '排序必须为数字值,0-99的数字，越大轮播图越靠前', trigger: ['blur','change']}
         ]"
       >
-        <el-input v-model.number="form.number" type="number" style="width:80px" />
+        <el-input v-model.number="form.number" type="number" style="width:80px" min="0" max="99" />
 
       </el-form-item>
       <el-form-item label="是否显示">
         <el-switch v-model="form.state" />
       </el-form-item>
       <div class="button">
-        <el-button type="primary" @click="onSubmit('form')">立即添加</el-button>
+        <el-button v-if="Image" type="primary" @click="onSubmit('form')">立即添加</el-button>
+        <el-button v-if="Upload" type="primary" @click="onSubmit('form')">保存修改</el-button>
         <el-button @click="resetMask">取消</el-button>
       </div>
     </el-form>
@@ -55,6 +61,12 @@
 <script>
 export default {
     name: 'BannerForm',
+    props: {
+        formData: {
+            default: null,
+            type: Object
+        }
+    },
     data() {
         return {
             msg: '',
@@ -66,11 +78,36 @@ export default {
                 state: true
             },
             fileList: [],
-            alertShow: false
+            alertShow: false,
+            // 控制表单上传时显示上传图片还是编辑时直接显示图片
+            Upload: true,
+            Image: false,
+            label: '选择图片'
         }
     },
-    mounted() {
+    watch: {
 
+    },
+    mounted() {
+        // 判断父组件是否传值
+        if (Object.keys(this.formData).length > 0) {
+            console.log(Object.keys(this.formData))
+            console.log('有传值，编辑表单')
+            this.Upload = false
+            this.Image = true
+            this.label = '轮播图'
+            this.form.name = this.formData.name
+            this.form.src = this.formData.url
+            this.form.link = this.formData.link_src
+            this.form.number = Number(this.formData.number)
+            this.form.state = this.formData.state
+            if (this.form.state === '正常') {
+                this.form.state = true
+            } else {
+                this.form.state = false
+            }
+            console.log(this.form)
+        }
     },
     methods: {
         resetMask() {

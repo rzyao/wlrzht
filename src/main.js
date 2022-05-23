@@ -21,8 +21,8 @@ import './views/adminlist/components/index'
 import component from '@/components/components'
 Vue.use(component)
 
-import Alert from '@/components/common/alert/alert.js'
-Vue.prototype.$myalert = Alert // alert 绑定到 vue 上方便调用
+import confirmChoose from '@/components/common/alert/alert.js'
+Vue.prototype.$myalert = confirmChoose // alert 绑定到 vue 上方便调用
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

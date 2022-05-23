@@ -59,7 +59,8 @@ module.exports = {
         // }
         proxy: {
             '^/php': {
-                target: 'http://www.htqq.sale/wlrz',
+                // target: 'http://www.htqq.sale/wlrz',
+                target: 'http://150.158.48.102/wlrz',
                 changeOrigin: true,
                 logLevel: 'debug'
             }

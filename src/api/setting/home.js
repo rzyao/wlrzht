@@ -15,3 +15,10 @@ export function getBannerList(token) {
         params: { token }
     })
 }
+export function deleteBanner(data) {
+    return request({
+        url: '/php/imgmanagement/deleteBanner.php',
+        method: 'get',
+        data
+    })
+}

@@ -1,11 +1,13 @@
 <template>
   <transition name="transition">
-    <div v-if="visible" class="app-container" :style="{height:appHeight ,width:appWidth}">
-
-      <div class="alert">
-        <div class="icon" />
-        <div class="information-box"><span class="information">{{ msg }}</span></div>
-        <div class="enter-box"><span class="enter" @click="resetAlert">确定</span></div>
+    <div v-show="visible" class="mask" :style="{height:bodyHeight ,width:bodyWidth}">
+      <div v-show="visible" class="app-container" :style="{height:appHeight ,width:appWidth}">
+        <div class="alert">
+          <div class="icon" />
+          <div class="information-box"><span class="information">{{ msg }}</span></div>
+          <div :class="[cancel?'confirm-box':'enter-box']"><span class="enter" @click="confirm">确定</span></div>
+          <div v-if="cancel" class="cancel-box"><span class="enter" @click="resetAlert">取消</span></div>
+        </div>
       </div>
     </div>
   </transition>
@@ -29,8 +31,11 @@ export default {
             msg: '',
             AppMainHeight: '',
             AppMainWidth: '',
+            BodyWidth: '',
+            BodyHeight: '',
             visible: false,
-            visibleStates: null
+            visibleStates: null,
+            cancel: true
         }
     },
     computed: {
@@ -39,6 +44,12 @@ export default {
         },
         appWidth: function() {
             return this.AppMainWidth + 'px'
+        },
+        bodyHeight: function() {
+            return this.BodyHeight + 'px'
+        },
+        bodyWidth: function() {
+            return this.BodyWidth + 'px'
         }
     },
     watch: {
@@ -49,7 +60,11 @@ export default {
     mounted() {
         // 获取AppMain的宽高
         this.AppMainWidth = document.getElementById('AppMain').offsetWidth
+        window.CSS.supports('--AppMainWidth', this.AppMainWidth + 'px')
         this.AppMainHeight = document.getElementById('AppMain').offsetHeight
+        window.CSS.supports('--AppMainHeight', this.AppMainHeight + 'px')
+        this.BodyWidth = document.body.offsetWidth
+        this.BodyHeight = document.body.offsetHeight
 
         // window.onresize = () => {
         //     return (() => {
@@ -63,26 +78,30 @@ export default {
         window.addEventListener('resize', () => {
             return (() => {
                 this.AppMainWidth = document.getElementById('AppMain').offsetWidth
+                window.CSS.supports('--AppMainWidth', this.AppMainWidth + 'px')
                 this.AppMainHeight = document.getElementById('AppMain').offsetHeight
+                window.CSS.supports('--AppMainHeight', this.AppMainHeight + 'px')
+                this.BodyWidth = document.body.offsetWidth
+                this.BodyHeight = document.body.offsetHeight
             })()
         })
-        this.confirm()
+        this.visible = true
     },
     methods: {
         resetAlert() {
+            console.log('resetAlert')
             this.visible = false
-            setTimeout(() => {
-                // 完全销毁一个实例。清理它与其它实例的连接，解绑它的全部指令及事件监听器。
-                // https://cn.vuejs.org/v2/api/#vm-destroy
-                this.$destroy(true)
-                this.$el.parentNode.removeChild(this.$el) // 从父元素上移除当前组件 dom
-            }, 500)
-            this.visibleStates && this.visibleStates.resolve()
+            return false
+            // setTimeout(() => {
+            //     // 完全销毁一个实例。清理它与其它实例的连接，解绑它的全部指令及事件监听器。
+            //     // https://cn.vuejs.org/v2/api/#vm-destroy
+            //     this.$destroy(true)
+            //     this.$el.parentNode.removeChild(this.$el) // 从父元素上移除当前组件 dom
+            // }, 500)
         },
         confirm() {
-            return new Promise((resolve, reject) => {
-                this.visibleStates = { resolve, reject }
-            })
+            console.log('confirm')
+            return true
         }
     }
 }
@@ -99,20 +118,30 @@ export default {
 .transition-enter-active, .transition-leave-active {
   transition: all 0.5s
 }
+.mask{
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background: rgba(10, 10, 10, 0.4);
+}
 .app-container{
   position: absolute;
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
   z-index: 9999;
   right: 0;
   bottom: 0;
   display: flex;
   justify-content: center;
+  align-content: center;
 }
 .alert{
   width: 300px;
   height: 180px;
-  margin-top: 12%;
+  /* margin-top: 12%; */
   border-radius: 20px;
   background-color: green;
   overflow: hidden;
@@ -124,6 +153,22 @@ export default {
   align-items: center;
   justify-content: center;
   background-color: red;
+}
+.cancel-box{
+  width: 150px;
+  height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: yellow;
+}
+.confirm-box{
+  width: 150px;
+  height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: yellow;
 }
 .enter-box{
   width: 300px;
