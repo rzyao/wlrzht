@@ -2,7 +2,9 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-
+import { Loading } from 'element-ui'
+let loadingInstance
+let loadingcount = 0
 axios.defaults.headers['Content-Type'] = 'application/json;charset=UTF-8'
 
 // create an axios instance
@@ -23,6 +25,8 @@ service.interceptors.request.use(
             // please modify it according to the actual situation
             config.headers['X-Token'] = getToken()
         }
+        loadingInstance = Loading.service({ text: '拼命加载中...' })
+        loadingcount++
         return config
     },
     error => {
@@ -44,12 +48,20 @@ service.interceptors.response.use(
 * Here is just an example
 * You can also judge the status by HTTP Status Code
 */
+
     response => {
         const res = response.data
         console.log('response')
         console.log(response)
         console.log('res = response.data')
         console.log(res)
+        if (loadingcount === 1) {
+            setTimeout(() => {
+                loadingInstance.close()
+            }, 600)
+        } else {
+            loadingcount--
+        }
         // if the custom code is not 20000, it is judged as an error.
         if (res.code !== '200') {
             console.log(res.code)

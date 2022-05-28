@@ -1,13 +1,20 @@
 <template>
-  <div id="adminlist" class="app-container">
+  <div class="app-container">
     <el-button
       size="medium "
       type="primary"
       style="margin-top: 10px;margin-left:20px ;"
       @click="addUser()"
-    >新增用户</el-button>
-    <admin-form :mask="mask" @sonform="getAndUploadForm" @resetMask="ResetMask" />
-    <show-form :mask="visible" :propsform="toChildForm" @updateform="updateForm" @resetMask="closeShowForm" />
+    >新增商家</el-button>
+    <business-form
+      v-if="visible"
+      background="AppMain"
+      :action="action"
+      :propsform="toChildForm"
+      @UpdateForm="UpdateForm"
+      @UploadForm="UploadForm"
+      @CloseForm="CloseBusinessForm"
+    />
     <el-table
       class="el-table"
       :data="tableData"
@@ -22,20 +29,17 @@
         align="center"
       >
         <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.username }}</span>
+          <span style="margin-left: 10px">{{ scope.row.id }}</span>
         </template>
       </el-table-column>
       <el-table-column
         label="用户名"
         width="120"
         align="center"
-      >
-        <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.nickname }}</span>
-        </template>
-      </el-table-column>
+        prop="name"
+      />
       <el-table-column
-        label="身份"
+        label="数据统计"
         width="120"
         align="center"
       >
@@ -49,15 +53,25 @@
         align="center"
       >
         <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.state }}</span>
+          <el-tag v-if="scope.row.state == true" size="medium" type="success">正常</el-tag>
+          <el-tag v-if="scope.row.state == false" size="medium" type="danger">禁用</el-tag>
         </template>
       </el-table-column>
       <el-table-column
-        label="权限"
+        label="商家权限"
         align="center"
       >
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.roles }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="创建时间"
+        width="180"
+        align="center"
+      >
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.create_time }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -68,6 +82,7 @@
         <template slot-scope="scope">
           <el-button
             size="small "
+            type="primary"
             @click="handleEdit(scope.$index, scope.row)"
           >编辑</el-button>
           <el-button
@@ -93,25 +108,30 @@
 </template>
 
 <script>
-import { addadmin, getAdminList, deleteInfo, updateAdmin } from '@/api/adminlist'
-import { Loading } from 'element-ui'
+import BusinessForm from '@/views/business/businesslist/BusinessForm.vue'
+import { getBusinessInfo, addBusiness, deleteBusiness, updateBusiness } from '@/api/business'
 export default {
     name: 'Adminlist',
+    components: {
+        'business-form': BusinessForm
+    },
     data() {
         return {
             currentPage1: 5,
             currentPage2: 5,
             currentPage3: 5,
             currentPage4: 4,
-            // 控制输入表单关闭
-            mask: false,
+            // 控制表单显示隐藏，默认为隐藏
             visible: false,
+            // 控制表单打开时，新增还是编辑,'add'是新增，'edit'是编辑
+            action: 'add',
             // 请求的表单数据
             form: [],
             // 获取到的用户列表
             tableData: [],
             // 传递给表单组件的数据
             toChildForm: {}
+
         }
     },
     created() {
@@ -122,14 +142,9 @@ export default {
     },
     methods: {
         fetchData() {
-            const loading = Loading.service({ })
-            console.log('this.loading')
-            console.log(loading)
-            getAdminList().then(response => {
-                console.log(response.data)
-                console.log('response.data')
+            getBusinessInfo().then(response => {
                 this.tableData = response.data
-                loading.close()
+                console.log(this.tableData)
             })
         },
         handleSizeChange(val) {
@@ -138,69 +153,68 @@ export default {
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`)
         },
-        ResetMask() {
-            console.log(this.$props)
-            this.mask = false
-        },
+        // 打开表单添加用户
         addUser() {
-            this.mask = true
+            this.action = 'add'
+            this.visible = true
         },
-        // 添加管理员账户
-        getAndUploadForm(form) {
+        // 添加管理员账户上传后台
+        UploadForm(form) {
             this.form = form
-            addadmin(this.form).then(response => {
+            addBusiness(this.form).then(response => {
                 const message = response.message
                 this.$message({
                     message: message,
                     type: 'success'
                 })
                 this.fetchData()
+                this.visible = false
             })
-            this.mask = false
         },
         handleEdit(index, row) {
             console.log(row)
             const newform = {
-                id: row.username,
-                name: row.nickname,
-                identity: row.identity,
-                state: row.state
+                id: row.id,
+                name: row.name,
+                current_time: row.current_time,
+                state: row.state,
+                password: row.password
             }
             this.toChildForm = newform
+            this.action = 'edit'
             this.visible = true
         },
-        closeShowForm() {
+        CloseBusinessForm() {
             this.visible = false
         },
-        updateForm(form) {
+        UpdateForm(form) {
             this.form = form
-            console.log(this.form)
-            const loading = Loading.service({ })
-            console.log('this.loading')
-            console.log(loading)
-            updateAdmin(this.form).then(response => {
+            if (this.form.password === undefined) {
+                this.form.password = 'undefined'
+            }
+            updateBusiness(this.form).then(response => {
                 const message = response.message
                 this.$message({
                     message: message,
                     type: 'success'
                 })
                 this.visible = false
-                setTimeout(() => {
-                    this.fetchData()
-                }, 500)
+                this.fetchData()
             })
         },
         handleDelete(index, row) {
             console.log(index)
             console.log(row)
-            deleteInfo(row).then(response => {
-                const message = response.message
-                this.$message({
-                    message: message,
-                    type: 'success'
+            this.$myalert({ msg: '确定删除这个商家吗' }).then(() => {
+                deleteBusiness(row).then(response => {
+                    const message = response.message
+                    this.$message({
+                        message: message,
+                        type: 'success'
+                    })
+                    this.visible = false
+                    this.fetchData()
                 })
-                this.visible = false
-                this.fetchData()
             })
         }
     }

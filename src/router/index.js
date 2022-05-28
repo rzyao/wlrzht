@@ -86,86 +86,24 @@ export const constantRoutes = [
             }
         ]
     },*/
-
     {
-        path: '/form',
+        path: '/goods',
         component: Layout,
+        redirect: '/goods/goods',
+        name: 'Goods',
+        meta: { title: '商品管理', icon: 'el-icon-s-help' },
         children: [
             {
-                path: 'index',
-                name: 'Form',
-                component: () => import('@/views/form/index'),
-                meta: { title: '表单', icon: 'form' }
-            }
-        ]
-    },
-
-    {
-        path: '/nested',
-        component: Layout,
-        redirect: '/nested/menu1',
-        name: 'Nested',
-        meta: {
-            title: 'Nested',
-            icon: 'nested'
-        },
-        children: [
-            {
-                path: 'menu1',
-                component: () => import('@/views/nested/menu1/index'), // Parent router-view
-                name: 'Menu1',
-                meta: { title: 'Menu1' },
-                children: [
-                    {
-                        path: 'menu1-1',
-                        component: () => import('@/views/nested/menu1/menu1-1'),
-                        name: 'Menu1-1',
-                        meta: { title: 'Menu1-1' }
-                    },
-                    {
-                        path: 'menu1-2',
-                        component: () => import('@/views/nested/menu1/menu1-2'),
-                        name: 'Menu1-2',
-                        meta: { title: 'Menu1-2' },
-                        children: [
-                            {
-                                path: 'menu1-2-1',
-                                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                                name: 'Menu1-2-1',
-                                meta: { title: 'Menu1-2-1' }
-                            },
-                            {
-                                path: 'menu1-2-2',
-                                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                                name: 'Menu1-2-2',
-                                meta: { title: 'Menu1-2-2' }
-                            }
-                        ]
-                    },
-                    {
-                        path: 'menu1-3',
-                        component: () => import('@/views/nested/menu1/menu1-3'),
-                        name: 'Menu1-3',
-                        meta: { title: 'Menu1-3' }
-                    }
-                ]
+                path: 'goodslist',
+                name: 'GoodsList',
+                component: () => import('@/views/goods/goodslist/index'),
+                meta: { title: '商品列表', icon: 'form' }
             },
             {
-                path: 'menu2',
-                component: () => import('@/views/nested/menu2/index'),
-                name: 'Menu2',
-                meta: { title: 'menu2' }
-            }
-        ]
-    },
-
-    {
-        path: 'external-link',
-        component: Layout,
-        children: [
-            {
-                path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-                meta: { title: 'External Link', icon: 'link' }
+                path: 'goodsclass',
+                name: 'GoodClass',
+                component: () => import('@/views/goods/goodsclass/index'),
+                meta: { title: '商品分类', icon: 'form' }
             }
         ]
     }
@@ -200,14 +138,35 @@ export const asyncRoutes = [
             {
                 path: 'userlist',
                 name: 'Userlist',
-                component: () => import('@/views/userlist/index'),
+                component: () => import('@/views/user/userlist/index'),
                 meta: { title: '用户列表', icon: 'table' }
             },
             {
                 path: 'adminlist',
                 name: 'Adminlist',
-                component: () => import('@/views/adminlist/index'),
+                component: () => import('@/views/user/adminlist/index'),
                 meta: { title: '管理员列表', icon: 'tree', role: ['admin', 'super_editor'] }
+            }
+        ]
+    },
+    {
+        path: '/business',
+        component: Layout,
+        redirect: '/business/business',
+        name: 'Business',
+        meta: { title: '商家管理', icon: 'el-icon-s-help', roles: ['admin', 'super_editor'] },
+        children: [
+            {
+                path: 'businesslist',
+                name: 'Businesslist',
+                component: () => import('@/views/business/businesslist/index'),
+                meta: { title: '商家列表', icon: 'table', role: ['admin', 'super_editor'] }
+            },
+            {
+                path: 'businesssetting',
+                name: 'Businesssetting',
+                component: () => import('@/views/business/businesssetting/index'),
+                meta: { title: '商家设置', icon: 'tree', role: ['admin', 'super_editor'] }
             }
         ]
     },

@@ -2,7 +2,7 @@
   <transition name="transition">
     <div v-show="visible" class="mask" :style="{height:bodyHeight ,width:bodyWidth}">
       <div v-show="visible" class="app-container" :style="{height:appHeight ,width:appWidth}">
-        <div class="alert">
+        <div class="alert" :style="{top:appHeight/2 }">
           <div class="icon" />
           <div class="information-box"><span class="information">{{ msg }}</span></div>
           <div :class="[cancel?'confirm-box':'enter-box']"><span class="enter" @click="confirm">确定</span></div>
@@ -128,7 +128,7 @@ export default {
   background: rgba(10, 10, 10, 0.4);
 }
 .app-container{
-  position: absolute;
+    position: absolute;
   /* width: 100%;
   height: 100%; */
   z-index: 9999;
@@ -139,9 +139,11 @@ export default {
   align-content: center;
 }
 .alert{
+  position: absolute;
+  top: 40vh;
   width: 300px;
   height: 180px;
-  /* margin-top: 12%; */
+  margin-top: -150px;
   border-radius: 20px;
   background-color: green;
   overflow: hidden;

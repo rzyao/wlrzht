@@ -51,8 +51,8 @@
         <el-switch v-model="form.state" />
       </el-form-item>
       <div class="button">
-        <el-button v-if="Image" type="primary" @click="onSubmit('form')">立即添加</el-button>
-        <el-button v-if="Upload" type="primary" @click="onSubmit('form')">保存修改</el-button>
+        <el-button v-if="Upload" type="primary" @click="onSubmit('form')">立即添加</el-button>
+        <el-button v-if="Image" type="primary" @click="Updateform('form')">保存修改</el-button>
         <el-button @click="resetMask">取消</el-button>
       </div>
     </el-form>
@@ -71,6 +71,7 @@ export default {
         return {
             msg: '',
             form: {
+                id: null,
                 name: '',
                 src: '',
                 link: '',
@@ -96,16 +97,7 @@ export default {
             this.Upload = false
             this.Image = true
             this.label = '轮播图'
-            this.form.name = this.formData.name
-            this.form.src = this.formData.url
-            this.form.link = this.formData.link_src
-            this.form.number = Number(this.formData.number)
-            this.form.state = this.formData.state
-            if (this.form.state === '正常') {
-                this.form.state = true
-            } else {
-                this.form.state = false
-            }
+            this.form = this.formData
             console.log(this.form)
         }
     },
@@ -120,9 +112,36 @@ export default {
                     console.log(valid)
                     console.log(this.form)
                     console.log(typeof this.form.src)
+                    console.log(this.form.src.length)
                     if (typeof this.form.src === 'string' && this.form.src.length !== 0) {
                         // 触发父组件的getAndUploadForm提交表单事件
                         this.$emit('sonform', this.form)
+                        console.log(this.form)
+                    } else {
+                        this.$myalert({ msg: '请上传图片' })
+                        return false
+                    }
+                } else {
+                    // console.log(this.$refs[form])
+                    // this.$myalert({ msg: '请填写完整表单' }).then(() => {
+                    //     console.log('确定关闭')
+                    // }).catch(() => {
+                    //     console.log('alert出错')
+                    // })
+                    return false
+                }
+            })
+        },
+        Updateform(form) {
+            this.$refs[form].validate((valid) => {
+                if (valid) {
+                    console.log(valid)
+                    console.log(this.form)
+                    console.log(typeof this.form.src)
+                    if (typeof this.form.src === 'string' && this.form.src.length !== 0) {
+                        // 触发父组件的getAndUploadForm提交表单事件
+                        this.$emit('Updateform', this.form)
+                        console.log(this.form)
                     } else {
                         this.$myalert({ msg: '请上传图片' })
                         return false
