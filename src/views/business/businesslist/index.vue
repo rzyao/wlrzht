@@ -7,7 +7,7 @@
       @click="addUser()"
     >新增商家</el-button>
     <business-form
-      v-if="visible"
+      :visible="visible"
       background="AppMain"
       :action="action"
       :propsform="toChildForm"
@@ -142,6 +142,7 @@ export default {
     },
     methods: {
         fetchData() {
+            this.tableData = []
             getBusinessInfo().then(response => {
                 this.tableData = response.data
                 console.log(this.tableData)
@@ -185,6 +186,7 @@ export default {
             this.visible = true
         },
         CloseBusinessForm() {
+            this.toChildForm = {}
             this.visible = false
         },
         UpdateForm(form) {

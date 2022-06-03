@@ -241,10 +241,6 @@ export default {
 }
 .el-table{
     width: 100%;
-    height: calc(100vh - 195px);;
-}
-.el-table{
-    width: 100%;
-    height: calc(100vh - 198px);
+    height: calc(100vh - 155px);
 }
 </style>

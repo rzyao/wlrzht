@@ -55,10 +55,10 @@ service.interceptors.response.use(
         console.log(response)
         console.log('res = response.data')
         console.log(res)
+        console.log(loadingcount)
         if (loadingcount === 1) {
-            setTimeout(() => {
-                loadingInstance.close()
-            }, 600)
+            loadingInstance.close()
+            loadingcount--
         } else {
             loadingcount--
         }

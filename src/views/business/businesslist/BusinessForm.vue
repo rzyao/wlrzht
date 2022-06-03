@@ -1,10 +1,10 @@
 <template>
   <div class="background">
     <transition name="transition">
-      <div v-if="mask == true" class="mask" />
+      <div v-if="mask == true" :key="1" class="mask" />
     </transition>
     <transition name="transition1">
-      <div v-if="mask == true" :key="1" class="form-background" :style="{height:appHeight ,width:appWidth}">
+      <div v-if="mask == true" :key="2" class="form-background" :style="{height:appHeight ,width:appWidth}">
         <div class="formbox">
           <div class="position-static">
             <el-form ref="form" :model="form" label-width="80px" label-position="left">
@@ -77,6 +77,10 @@ export default {
         background: {
             type: String,
             default: 'body'
+        },
+        visible: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -103,15 +107,27 @@ export default {
         }
     },
     watch: {
-
+        visible: function(newval, oldval) {
+            if (newval === true) {
+                console.log('newval')
+                console.log(newval)
+                this.mask = true
+                console.log(this.form)
+            } else {
+                console.log(newval + 'false')
+                this.mask = false
+            }
+        },
+        action: function() {
+            if (this.action === 'edit') {
+                console.log(this.action === 'edit')
+                this.form = this.propsform
+                console.log(this.propsform)
+            }
+        }
     },
     mounted() {
-        if (this.action === 'edit') {
-            console.log(this.action === 'edit')
-            this.form = this.propsform
-            console.log(this.propsform)
-        }
-        this.mask = true
+        //
         // 获取AppMain的宽高
         if (this.background === 'body') {
             this.BGWidth = document.body.offsetWidth
@@ -153,6 +169,13 @@ export default {
         //     this.$refs['form'].resetFields()
         // },
         CloseForm() {
+            // 清除表单数据
+            this.form = {
+                id: '',
+                password: '',
+                name: '',
+                state: true
+            }
             this.mask = false
             // this.resetForm()
             setTimeout(() => {
