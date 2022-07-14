@@ -103,7 +103,7 @@
       <div class="iframe-box">
         <el-image :src="require('@/icons/phone.png')" style="height: 647px;width: 300px;position: absolute;pointer-events: none;" />
         <div class="iframe">
-          <iframe v-if="refresh" id="iframe" width="286" height="590" src="http://localhost:8080/pages/index/index" allowfullscreen="allowfullscreen" frameborder="0" />
+          <iframe v-if="refresh" id="iframe" width="286" height="590" src="https://www.htqq.sale/wlrz/h5/index.html" allowfullscreen="allowfullscreen" frameborder="0" />
         </div>
       </div>
     </div>

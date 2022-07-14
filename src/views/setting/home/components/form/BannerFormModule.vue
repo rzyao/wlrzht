@@ -21,7 +21,7 @@
             <el-form-item v-if="Upload" :label="label">
               <el-upload
                 class="upload"
-                action="http://150.158.48.102/wlrz/temporary/imgstore.php"
+                action="https://www.htqq.sale/wlrz/temporary/imgstore.php"
                 :on-remove="removeImg"
                 list-type="picture"
                 :auto-upload="true"
