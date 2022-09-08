@@ -16,16 +16,6 @@
 <script>
 export default {
     name: 'MyAlert',
-    // props: {
-    //     text: {
-    //         type: String,
-    //         default: '系统错误,请联系管理员处理'
-    //     },
-    //     show: {
-    //         type: Boolean,
-    //         default: false
-    //     }
-    // },
     data() {
         return {
             msg: '',
@@ -100,8 +90,7 @@ export default {
             // }, 500)
         },
         confirm() {
-            console.log('confirm')
-            return true
+
         }
     }
 }
@@ -109,14 +98,40 @@ export default {
 
 <style scoped>
 /* 缩放动画 */
+/*
 .transition-enter, .transition-leave-to {
-  transform: scale(0)
+  transform: translateY(-100%);
 }
 .transition-leave, .transition-enter-to {
-  transform: scale(1)
+  transform: translateY(0);
 }
-.transition-enter-active, .transition-leave-active {
-  transition: all 0.5s
+*/
+.transition-enter-active{
+  animation: dialog-fade-in .3s;
+}
+.transition-leave-active{
+animation: dialog-fade-out .3s;
+}
+@keyframes dialog-fade-in {
+  0% {
+    transform: translate3d(0, -20px, 0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-fade-out {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, -20px, 0);
+    opacity: 0;
+  }
 }
 .mask{
   position: fixed;

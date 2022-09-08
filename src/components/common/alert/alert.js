@@ -15,13 +15,9 @@ const confirmer = function(options) {
         instance.visible = true // 设置 data 里的 visible 为 true 显示弹框
         // return instance
         instance.confirm = function() {
-            resolve(true)
+            resolve()
             instance.resetAlert()
         }
-        // instance.resetAlert = function() {
-        //     reject(false)
-        //     instance.visible = false
-        // }
     }).catch(error => {
         console.log('error', error) // 这里会打印捕获的异常是什么，我这里是false
     })

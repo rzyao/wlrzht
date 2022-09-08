@@ -1,5 +1,6 @@
 <template>
   <div class="app">
+    <el-button @click="click">弹窗</el-button>
     <div class="app-concent">
       <el-table
         class="el-table"
@@ -98,6 +99,11 @@ export default {
         this.getGoodsInfo()
     },
     methods: {
+        click() {
+            this.$myalert({ msg: '提示信息' }).then(() => {
+                console.log('点击了确定')
+            })
+        },
         changeStateToDisable(id) {
             const paramas = {
                 id: id,
